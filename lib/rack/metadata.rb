@@ -11,15 +11,15 @@ module Rack
 
       if headers['Content-Type'].to_s.include?('text/html') # Only update HTML bodies
         if env['rack.metadata']
-          env['rack.metadata'].each do |k, v|
-            response.each do |part|
-              if part.rindex('</head>')
-                tag = message(k, v)
-                part.gsub!('</head>', tag + '</head>')
-                headers['Content-Length'] = (headers['Content-Length'].to_i + tag.length).to_s
-              end
-            end
+          body = ""
+          response.each { |part| body << part }
+          index = body.rindex("</head>")
+          if index
+            body.insert(index, env['rack.metadata'].map{|k,v| message(k,v)}.join(""))
+            headers["Content-Length"] = body.length.to_s
+            response = [body]
           end
+        end
       end
 
       [status, headers, response]
