@@ -14,8 +14,9 @@ module Rack
           env['rack.metadata'].each do |k, v|
             response.each do |part|
               if part.rindex('</head>')
-                part.gsub!('</head>', message(k, v) + '</head>')
-                headers['Content-Length'] = (headers['Content-Length'].to_i + message.length).to_s
+                tag = message(k, v)
+                part.gsub!('</head>', tag + '</head>')
+                headers['Content-Length'] = (headers['Content-Length'].to_i + tag.length).to_s
               end
             end
           end
