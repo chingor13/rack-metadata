@@ -4,11 +4,11 @@ require 'pp'
 class MetadataTest < MiniTest::Unit::TestCase
 
   def test_embeds_meta_at_end_of_html_head
-    req = request({
+    response = request({
       description: "My page's meta description",
       keywords: "Foo, bar"
     })
-    doc = Nokogiri::HTML(req.body)
+    doc = Nokogiri::HTML(response.body)
     metas = doc.search('html head meta')
     assert_equal(2, metas.count)
 
@@ -19,6 +19,22 @@ class MetadataTest < MiniTest::Unit::TestCase
     keywords = metas.last
     assert_equal("keywords", keywords['name'])
     assert_equal("Foo, bar", keywords['content'])
+  end
+
+  def test_does_nothing_on_non_html
+    response = request({
+      description: "My page's meta description",
+      keywords: "Foo, bar"
+    }, {content_type: 'text/javascript'})
+    assert_equal(HTML_DOC, response.body)
+  end
+
+  def test_does_nothing_when_no_head_tag
+    response = request({
+      description: "My page's meta description",
+      keywords: "Foo, bar"
+    }, {body: ["Some text"]})
+    assert_equal("Some text", response.body)
   end
 
   protected
