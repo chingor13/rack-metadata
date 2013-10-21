@@ -4,6 +4,8 @@ Gem::Specification.new do |s|
   s.description = "Add metadata tags to the header"
   s.summary = "Add metadata tags to the html header"
   s.add_dependency "rack"
+  s.add_development_dependency "rack-test"
+  s.add_development_dependency "nokogiri"
 
   s.author = "Jeff Ching"
   s.email = "jeff@chingr.com"
