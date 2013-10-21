@@ -1,4 +1,4 @@
-# rack-metadata
+# rack-metadata [![Build Status](https://travis-ci.org/chingor13/rack-metadata.png)](https://travis-ci.org/chingor13/rack-metadata)
 
 Inject meta tags into your head.  This rack middleware collects meta data about a page and will inject meta tags into the head of your html content.
 
