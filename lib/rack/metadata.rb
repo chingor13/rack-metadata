@@ -16,7 +16,7 @@ module Rack
           index = body.rindex("</head>")
           if index
             body.insert(index, env['rack.metadata'].map{|k,v| message(k,v)}.join(""))
-            headers["Content-Length"] = body.length.to_s
+            headers["Content-Length"] = body.bytesize.to_s
             response = [body]
           end
         end
