@@ -1,5 +1,6 @@
 module Rack
   class Metadata
+    MAGIC_COMMENT = '<!--rack-metadata-->'.freeze
 
     def initialize(app, options = {})
       @app = app
@@ -13,10 +14,17 @@ module Rack
         if env['rack.metadata']
           body = ""
           response.each { |part| body << part }
-          index = body.rindex("</head>")
+
+          index = nil
+          if index = body.rindex(MAGIC_COMMENT)
+            body.slice!(index, MAGIC_COMMENT.length)
+          else
+            index = body.rindex('</head>')
+          end
+
           if index
-            body.insert(index, env['rack.metadata'].map{|k,v| message(k,v)}.join(""))
-            headers["Content-Length"] = body.bytesize.to_s
+            body.insert(index, env['rack.metadata'].map { |k, v| message(k, v) }.join(''))
+            headers['Content-Length'] = body.bytesize.to_s
             response = [body]
           end
         end
@@ -30,6 +38,5 @@ module Rack
     def message(name, content)
       %{<meta name="#{name}" content="#{content}" />}
     end
-
   end
 end
